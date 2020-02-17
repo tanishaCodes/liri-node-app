@@ -6,12 +6,12 @@ var spotify     = require('spotify');
 var request     = require('request');
 //var client  = new Spotify(keys.spotifyKeys);
 
-
 // BANDS IN TOWN
-bandsInTown.search({ Venue: 'establishment', Location: 'address', Date: 'moment.js'}, function(err, data) {
-    if (err) {
-        return console.log('Error occurred: ' + err);
-      }
+var getMyBands = function(bands) {
+    bandsInTown.search({ Venue: 'establishment', Location: 'address', Date: 'moment.js'}, function(err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
      
     console.log(data); 
 });
@@ -22,9 +22,10 @@ var getArtistNames = function(artist){
 }
 
 var getMeSpotify = function(songName){
-    spotify.search({ Artist: 'name', Track: 'song' }, function(err, data) {
-        if (err) {
-        return console.log('Error occurred: ' + err);
+    spotify.search({type: 'track', query: songName}, function(err, data) {
+        if (err){
+        console.log(Artist, 'Ace of Base', Track, 'The Sign');
+        return;
     }
     
     var songs = data.tracks.items;
@@ -32,7 +33,7 @@ var getMeSpotify = function(songName){
             console.log(i);
             console.log('Artist(s): ' + songs[i].artists.map(getArtistNames));
             console.log('Song Name: ' + songs[i].name);
-            console.log('Preview Song:' +songs[i].preview_url);
+            console.log('Preview Song:' + songs[i].preview_url);
             console.log('Album:' + songs[i].album.name);
             console.log('*****************END*****************');
         }
@@ -41,36 +42,31 @@ var getMeSpotify = function(songName){
 
 var getMeMovie = function(movieName){
     requests('http://www.omdbapi.com/?t=' + movieName + '&y=&plot=short&r=json', function (error, response, body){
-    if (err){
-        return console.log('connection closed due to errors', err)
-        }
-    else if{
-        console.log('If you have not watched "Mr. Nobody," then you should:' + 'https://www.imdb.com/title/tt0485947/');
-
-        var jsonData = JSON.parse(body);
-            console.log('Title:' + jsonData.Title);
-            console.log('Year:' + jsonData.Year);
-            console.log('IMDB Rating:' + jsonData.imdbRating);
-            console.log('Rotten Tomatoes Rating:' + jsonData.rottenTomatoesRating);
-            console.log('Country:' + jsonData.Country);
-            console.log('Language:' + jsonData.Language);
-            console.log('Plot:' + jsonData.Plot);
-            console.log('Actors:' + jsonData.Actors);
-        }
-    });
-}
+        if (!error && response.statusCode == 200){
+            var jsonData = JSON.parse(body);
+                console.log('Title:' + jsonData.Title);
+                console.log('Year:' + jsonData.Year);
+                console.log('IMDB Rating:' + jsonData.imdbRating);
+                console.log('Rotten Tomatoes Rating:' + jsonData.rottenTomatoesRating);
+                console.log('Country:' + jsonData.Country);
+                console.log('Language:' + jsonData.Language);
+                console.log('Plot:' + jsonData.Plot);
+                console.log('Actors:' + jsonData.Actors);
+            } 
+        });  
+    }
 
 var doWhatItSays = function(){
-fs.readFile('random.txt', 'utf8', function(err, data) => {
-    if (err) throw err;
+    fs.readFile('random.txt', 'utf8', function(err, data) {
+        if (err) throw err;
     
-    var dataArr = data.split(',');
-        if(dataArr.length == 2){
+        var dataArr = data.split(',');
+            if(dataArr.length == 2){
             pick(dataArr[0], dataArr[1]);
-        } else if(dataArr.length == 1){
+            } else if(dataArr.length == 1){
             pick(dataArr[0]);
         }
-  });
+    });
 }
 
 var pick = function(caseData, functionData){
@@ -92,9 +88,11 @@ var pick = function(caseData, functionData){
     }
 }
 
-var runThis = function(process.argv[2], process.argv[3]);
-    pick(process.argv[2], process.argv[3]);
+var runThis = function(argOne, argTwo) {
+    pick(argOne, argTwo);
+};
+
+runThis(process.argv[2], process.argv[3]);
+
+
 }
-
-
-
