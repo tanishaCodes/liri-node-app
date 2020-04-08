@@ -1,10 +1,16 @@
 require("dotenv").config();
 
+var fs          = require("fs");
 var keys        = require("./keys.js");
-var bandsInTown = require('bandsInTown');
-var spotify     = require('spotify');
+var client      = new Spotify(keys.spotifyKeys);
+
+var moment      = require("moment");
+var axios       = require("axios");
 var request     = require('request');
-//var client  = new Spotify(keys.spotifyKeys);
+
+var bandsInTown = require('bandsInTown');
+var Spotify     = require("node-spotify-api");
+
 
 // BANDS IN TOWN
 var getMyBands = function(bands) {
@@ -40,6 +46,7 @@ var getMeSpotify = function(songName){
   });
 }
 
+// OMDB
 var getMeMovie = function(movieName){
     requests('http://www.omdbapi.com/?t=' + movieName + '&y=&plot=short&r=json', function (error, response, body){
         if (!error && response.statusCode == 200){
@@ -56,18 +63,18 @@ var getMeMovie = function(movieName){
         });  
     }
 
-var doWhatItSays = function(){
+var doWhatItSays = function() {
     fs.readFile('random.txt', 'utf8', function(err, data) {
-        if (err) throw err;
-    
-        var dataArr = data.split(',');
-            if(dataArr.length == 2){
-            pick(dataArr[0], dataArr[1]);
-            } else if(dataArr.length == 1){
-            pick(dataArr[0]);
+        if (err) {
+            return console.log('Error occurred: ' + err);
         }
-    });
-}
+    
+    var output = data.split(",");
+    for (var i = 0; i < output.length; i++) {
+        console.log(output[i]);
+    }
+  });
+};
 
 var pick = function(caseData, functionData){
     switch(caseData){
@@ -93,6 +100,5 @@ var runThis = function(argOne, argTwo) {
 };
 
 runThis(process.argv[2], process.argv[3]);
-
 
 }
