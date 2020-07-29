@@ -14,6 +14,3 @@ LIRI is a command line app that displays:
     ![Image of movie-this command]("movie-this.jpg")
 
 
-
-*non-functioning LIRI Bot*
-
